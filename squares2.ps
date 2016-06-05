@@ -1,0 +1,101 @@
+
+
+% print squares: [ offset ...months ]
+10 dict begin
+/traceSq { % trace a square at current location, consuming a size
+	   % argument.  square is drawn up and to the right. Point
+	   % remains where it was.
+	   dup 0 rlineto
+	   dup 0 exch rlineto
+	   neg 0 rlineto
+	   closepath
+}
+/sq { % size fill => -
+    exch traceSq gsave setgray fill grestore
+}
+/drawMonth { % weekOffset NumOfDays => weekOffset
+    % skip offset number of days, draw month,
+    % return current offset and
+    % put point at beginning of new offset
+    5 dict begin
+    /numOfDays exch def
+    /weekOffset exch def
+    /firstDayGray .6 def
+    /dayGray .3 def
+    /size 10 def
+    1 1 weekOffset {
+	(offset) =
+	size 0.3 sq
+	0 size neg 1 sub rmoveto
+    } for
+    weekOffset 1 numOfDays 1 sub {
+	(month) = 
+	dup weekOffset 0 eq {
+	    size firstDayGray sq
+	} {
+	    size dayGray sq
+	} ifelse
+	0 size neg 1 sub rmoveto
+	dup 7 mod 0 eq { % new week
+	    size 1 add size 1 add 7 mul rmoveto
+	} if
+    } for
+    weekOffset numOfDays add 7 mod % new offset
+    dup 1 add mul 0 exch rmoveto % goto col top
+    end
+}
+    
+/size 30 def
+/width 5 def
+/checkCol { % dayNum => -
+    7 mod 0 eq { % move to new column
+	size width add   size 7 mul    rmoveto
+    } if
+} def
+/drawSq { % fillColor => -
+    gsave
+    setgray
+    width setlinewidth
+    size 0 rlineto
+    0 size neg rlineto
+    size neg 0 rlineto
+    closepath
+    fill
+    1 0 0 setrgbcolor
+    stroke
+    grestore
+} def
+/drawMonth { % weekOffset numOfDays firstDayGray => weekOffset
+    3 dict begin
+    /firstDayGray exch def
+    /numOfDays exch def
+    /weekOffset exch def
+    numOfDays 0 gt {
+    	firstDayGray drawSq
+    	weekOffset 1 weekOffset numOfDays add {
+    	    checkCol
+    	    0 drawSq
+    	} for
+    } if
+    numOfDays weekOffset add 7 mod % Leave new week offset on the stack
+    end
+} def
+/drawYear { % [ offset monthLengths ] => offset
+    1 dict begin
+    /days exch def
+    0  days 0 get  0 drawMonth % new offset on the stack after drawMonth runs
+    1  1  days length 1 sub {
+	days exch get .5 drawMonth
+    } for
+    end
+} def
+
+/year2016 [ 4 31 29 31 30 31 30 31 31 30 31 30 31 ] def
+
+newpath
+72 720 moveto
+(hello) show
+stack
+year2016 drawYear
+
+end

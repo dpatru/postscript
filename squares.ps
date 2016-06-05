@@ -1,0 +1,25 @@
+%!PS-Adobe-3.0 EPSF-3.0
+%%BoundingBox: 36 36 576 756
+%%BeginProlog
+%%EndProlog
+/sq { % no stack
+    5 0 rlineto
+    0 5 rlineto
+    -5 0 rlineto
+    closepath
+} def
+
+1 setlinewidth
+100 10 500 {
+    100 10 700 {
+	% x y on the stack
+	2 copy
+	%newpath
+	mgoveto sq
+	pop % remove the y
+    } for
+    pop % remove xXS
+} for
+stroke
+%showpage
+%%EOF

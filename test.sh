@@ -1,0 +1,3 @@
+!/usr/bin/bash
+
+gs -dDEVICEWIDTHPOINTS=360 -dDEVICEHEIGHTPOINTS=252 s.ps

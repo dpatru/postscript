@@ -1,0 +1,144 @@
+%!PS-Adobe-3.0 EPSF-3.0
+%%Creator: [generally the program that generated the postscript]
+%%Title: [descriptive name or just the file name]
+%%CreationDate: [date the file was created]
+%%DocumentData: Clean7Bit
+%%Origin: 0 0
+%%BoundingBox: 0 0 216 0 360
+%%LanguageLevel: 2
+%%Pages: 1
+%%Page: 1 1
+%%EOF
+
+
+/traceSq { % trace a square at current location, consuming a size
+	   % argument.  square is drawn up and to the right. Point
+	   % remains where it was.
+	   dup 0 rlineto
+	   dup 0 exch rlineto
+	   neg 0 rlineto
+	   closepath
+} def
+/sq { % size fill => -
+    gsave currentpoint newpath moveto
+    exch traceSq setgray fill
+    grestore
+} def
+
+/sqmove { % size fill => -
+    gsave currentpoint newpath moveto
+    exch dup traceSq exch
+    setgray fill grestore
+} def
+
+/drawMonth { % weekOffset NumOfDays size label => weekOffset
+    % skip offset number of days, draw month,
+    % return current offset and
+    % put point at beginning of new offset
+    % (drawMonth) = 2 copy = =
+    
+    6 dict begin
+    /size exch def
+    /numOfDays exch def
+    /label exch def
+    /weekOffset exch def
+    /firstDayGray 0.8 def
+    /dayGray 0.9 def
+
+    1 1 weekOffset {
+	% (offset) =
+	pop 
+	% size 1 sq
+	0 size neg 1 sub rmoveto
+    } for
+    weekOffset 1 weekOffset numOfDays add 1 sub {
+	% (month) =
+	% currentpoint = =
+	dup 7 mod 0 eq { % new week
+	    % (new week) =
+	    size 1 add size 1 add 7 mul rmoveto
+	} if
+	weekOffset eq {
+	    % (first) =
+	    size firstDayGray sq
+	    gsave
+	    /Courier size selectfont
+	    label show
+	    grestore
+	} {
+	    size dayGray sq
+	} ifelse
+	0 size neg 1 sub rmoveto
+    } for
+    % (stack begin) = stack (empty? ) =
+    weekOffset numOfDays add 7 mod % new offset
+    dup size 1 add mul 0 exch rmoveto % goto col top
+    end
+} def
+
+/drawYear { % [ offset janDays febDays ... ] size => offset
+    1 dict begin
+    /size exch def
+    /arr exch def
+    arr 0 get
+    1 2 arr length 1 sub {
+	% (drawing month) = dup =
+	dup arr exch get % label
+	exch 1 add arr exch get % days
+	size drawMonth
+    } for
+    end
+} def
+
+/year2016 [ 5 (J) 31 (F) 29 (M) 31 (A) 30 (M) 31 (J) 30 (J) 31 (A) 31 (S) 30 (O) 31 (N) 30 (D) 31 ] def
+
+/draw2016 { % size => offset
+    year2016 exch drawYear
+} def
+
+% 300 300 moveto draw2016
+
+/draw2col2016 {
+    1 1 10 {	
+	72 mul 72 exch moveto
+	3 draw2016 pop
+	20 0 rmoveto
+	3 draw2016 pop
+    } for
+} def
+
+
+/draw1col2016old {
+    7 dict begin
+    /n 6 def % number of calendars
+    /s 8 def % size of squares
+    /margin 60 def
+    /height 792 def
+    /content height margin 2 mul sub def
+    /S content n div def
+    /offset S s 1 add 7 mul sub 2 div def
+    margin S add S height margin sub {	
+	offset sub margin exch moveto
+	s draw2016 pop
+    } for
+    end
+} def
+
+/draw1col2016 { 
+    7 dict begin
+    /n 3 def % number of calendars
+    /s 5 def % size of squares
+    /margin 20 def
+    /height 252 def
+    /content height margin 2 mul sub def
+    /S content n div def
+    /offset S s 1 add 7 mul sub 2 div def
+    margin S add S height margin sub {	
+	offset sub margin exch moveto
+	s draw2016 pop
+    } for
+    end
+} def
+
+draw1col2016
+
